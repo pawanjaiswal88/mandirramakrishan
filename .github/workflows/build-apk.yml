@@ -3,19 +3,17 @@ name: Build Android APK
 on:
   push:
     branches:
-      - main # Runs automatically whenever you push code to the main branch
-  workflow_dispatch: # Allows you to manually trigger the build with a button click
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Download the code from your repository into the runner environment
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Set up the Java Environment (Required for Android Compiling)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -23,17 +21,21 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      # 3. Grants executive permissions to the Gradle build tool
+      # Navigates into your folder and grants permission
       - name: Grant Execute Permission for Gradlew
-        run: chmod +x gradlew
+        run: |
+          cd YOUR_FOLDER_NAME
+          chmod +x gradlew
 
-      # 4. Compiles the source files into a debug APK
+      # Navigates into your folder and builds the APK
       - name: Compile and Build APK
-        run: ./gradlew assembleDebug
+        run: |
+          cd YOUR_FOLDER_NAME
+          ./gradlew assembleDebug
 
-      # 5. Extracts the compiled file out of the virtual machine so you can download it
+      # Extracts the built APK file from the correct path
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: mandir-app-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: MandirManager/app/build/outputs/apk/debug/app-debug.apk
